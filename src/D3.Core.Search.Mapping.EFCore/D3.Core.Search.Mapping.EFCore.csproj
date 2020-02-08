@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper.Extensions.ExpressionMapping" Version="3.0.6" />
+		<PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="1.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\D3.Core.Search\D3.Core.Search.csproj" />
+		<ProjectReference Include="..\D3.Core\D3.Core.csproj" />
+	</ItemGroup>
+
+</Project>

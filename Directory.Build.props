@@ -1,0 +1,32 @@
+<Project>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>None</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Colin Dekker</Authors>
+    <Company>D-Cubed</Company>
+    <Product>D-Cubed Identity Showcase</Product>
+    <Copyright>Copyright © D-Cubed bv. All rights reserved.</Copyright>
+
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <RepositoryType>git</RepositoryType>
+
+    <UseFullSemVerForNuGet>true</UseFullSemVerForNuGet>
+    <DebugType>embedded</DebugType>
+    <IncludeSymbols>false</IncludeSymbols>
+    <!--<SourceLinkEnabled>true</SourceLinkEnabled>-->
+    <IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+  <!--<ItemGroup Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false'">
+    <PackageReference Include="Microsoft.SourceLink.Vsts.Git" Version="1.0.0-beta2-19270-01" PrivateAssets="All"/>
+  </ItemGroup>-->
+
+</Project>
