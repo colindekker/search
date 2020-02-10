@@ -31,11 +31,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "ForeignKey",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = null, Compare = QueryPredicateValueCompare.Equal });
+            p1.Values.Add(new QueryPredicateValue { Value = null, CompareUsing = QueryPredicateComparison.Equal });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
@@ -64,11 +64,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "ForeignId",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "12345", Compare = QueryPredicateValueCompare.Equal });
+            p1.Values.Add(new QueryPredicateValue { Value = "12345", CompareUsing = QueryPredicateComparison.Equal });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>

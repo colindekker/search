@@ -33,11 +33,11 @@ namespace D3.Tests.Core.Search.EFCore.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Name",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "June", Compare = QueryPredicateValueCompare.Equal });
+            p1.Values.Add(new QueryPredicateValue { Value = "June", CompareUsing = QueryPredicateComparison.Equal });
             config.QueryBy.Add(p1);
 
             var source = new List<Parent>

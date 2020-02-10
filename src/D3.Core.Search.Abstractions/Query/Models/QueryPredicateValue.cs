@@ -25,9 +25,17 @@ namespace D3.Core.Search.Query.Models
         /// Gets or sets the check.
         /// </summary>
         /// <value>
+        /// The boolean comparison type. (defaults to PredicateValueCompareAs.And)
+        /// </value>
+        public QueryPredicateConnective CompareWith { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of comparison to be made.
+        /// </summary>
+        /// <value>
         /// The type of comparison. (defaults to PredicateValueCompare.Equal)
         /// </value>
-        public QueryPredicateValueCompare Compare { get; set; }
+        public QueryPredicateComparison CompareUsing { get; set; }
 
         /// <summary>
         /// Gets or sets the formula. Can be used for say RegEx filters

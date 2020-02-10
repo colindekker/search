@@ -28,7 +28,7 @@ namespace D3.Core.Search.Query.Models
         /// <value>
         /// The boolean comparison type. (defaults to PredicateValueCompareAs.And)
         /// </value>
-        QueryPredicateCompare Compare { get; set; }
+        QueryPredicateConnective CompareWith { get; set; }
 
         IList<TPredicateValue> Values { get; set; }
     }

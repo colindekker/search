@@ -31,11 +31,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Id",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "1", Compare = QueryPredicateValueCompare.Equal });
+            p1.Values.Add(new QueryPredicateValue { Value = "1", CompareUsing = QueryPredicateComparison.Equal });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>

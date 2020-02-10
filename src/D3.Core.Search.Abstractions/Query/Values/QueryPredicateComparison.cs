@@ -1,6 +1,6 @@
 namespace D3.Core.Search.Query.Values
 {
-    public enum QueryPredicateValueCompare
+    public enum QueryPredicateComparison
     {
         /// <summary>
         /// Value of the predicate is equal to query value.

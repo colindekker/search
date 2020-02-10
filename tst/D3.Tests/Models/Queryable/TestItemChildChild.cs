@@ -28,5 +28,7 @@ namespace D3.Tests.Models.Queryable
         public decimal CostPrice { get; set; }
 
         public decimal? SalePrice { get; set; }
+
+        public TestItemChildChild Child { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 namespace D3.Core.Search.Query.Values
 {
-    public enum QueryPredicateCompare
+    public enum QueryPredicateConnective
     {
         /// <summary>
         /// Check the the values of a predicate using AND boolean logic.

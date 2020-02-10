@@ -40,7 +40,7 @@ namespace D3.Core.Search.Query.Helpers
 
                         predicateExpression = predicateExpression == null
                             ? predicateValueExpression
-                            : queryPredicate.Compare == QueryPredicateCompare.And
+                            : queryPredicateValue.CompareWith == QueryPredicateConnective.And
                                 ? Expression.And(predicateExpression, predicateValueExpression)
                                 : Expression.OrElse(predicateExpression, predicateValueExpression);
                     }
@@ -52,7 +52,9 @@ namespace D3.Core.Search.Query.Helpers
 
                     var e = Expression.Lambda<Func<T, bool>>(predicateExpression, parameter);
 
-                    predicate = predicate.And(e);
+                    predicate = queryPredicate.CompareWith == QueryPredicateConnective.And
+                        ? predicate.And(e)
+                        : predicate.Or(e);
                 }
 
                 result = source.Where(predicate);
@@ -98,16 +100,23 @@ namespace D3.Core.Search.Query.Helpers
 
                     return Expression.Call(typeof(Enumerable), "Any", new[] { a }, c, l);
                 }
-                else
-                {
-                    Expression body = parameter;
 
-                    // TODO
-                    // make this a while looping through split on dot, adding to the body expression until the 
-                    // current part is one of the datas types supported below for comparison (like string, datetime, enum etc.)
-                    body = Expression.PropertyOrField(body, predicate.ColumnCode.Split('.')[0]);
-                    return GetWherePropertyValueComparison(property.PropertyType, body, predicate, predicateValue);
+                Expression body = parameter;
+                foreach (var memberCode in predicate.ColumnCode.Split('.'))
+                {
+                    var memberProperty = type.GetProperty(memberCode);
+
+                    if (!IsComparableProperty(memberProperty) && !memberProperty.PropertyType.Implements<IEnumerable>())
+                    {
+                        property = memberProperty;
+                        body = Expression.PropertyOrField(body, memberCode);
+                    }
                 }
+
+                return GetWherePropertyValueComparison(property.PropertyType, body, predicate, predicateValue);
+
+                //body = Expression.PropertyOrField(body, code);
+                //return GetWherePropertyValueComparison(property.PropertyType, body, predicate, predicateValue);
             }
 
             return GetWherePropertyValueComparison(type, parameter, predicate, predicateValue);
@@ -130,29 +139,79 @@ namespace D3.Core.Search.Query.Helpers
 
             var value = GetTypedValue(property, predicateValue.Value);
 
-            switch (predicateValue.Compare)
+            switch (predicateValue.CompareUsing)
             {
-                case QueryPredicateValueCompare.Equal:
+                case QueryPredicateComparison.Equal:
                     return Expression.Equal(Expression.Property(parameter, property), value);
-                case QueryPredicateValueCompare.NotEqual:
+                case QueryPredicateComparison.NotEqual:
                     return Expression.NotEqual(Expression.Property(parameter, property), value);
-                case QueryPredicateValueCompare.LessThan:
+                case QueryPredicateComparison.LessThan:
                     return Expression.LessThan(Expression.Property(parameter, property), value);
-                case QueryPredicateValueCompare.LessThanOrEqual:
+                case QueryPredicateComparison.LessThanOrEqual:
                     return Expression.LessThanOrEqual(Expression.Property(parameter, property), value);
-                case QueryPredicateValueCompare.GreaterThan:
+                case QueryPredicateComparison.GreaterThan:
                     return Expression.GreaterThan(Expression.Property(parameter, property), value);
-                case QueryPredicateValueCompare.GreaterThanOrEqual:
+                case QueryPredicateComparison.GreaterThanOrEqual:
                     return Expression.GreaterThanOrEqual(Expression.Property(parameter, property), value);
-                case QueryPredicateValueCompare.StartsWith:
-                case QueryPredicateValueCompare.EndsWith:
-                case QueryPredicateValueCompare.Contains:
+                case QueryPredicateComparison.StartsWith:
+                case QueryPredicateComparison.EndsWith:
+                case QueryPredicateComparison.Contains:
                     return property.PropertyType == typeof(string)
-                        ? StringPropertyFilter(parameter, property, predicateValue.Value, predicateValue.Compare)
-                        : throw new QueryPredicateValueException($"Property '{code}' on type {type.Name} should be of type string to use {predicateValue.Compare} as comparison type.");
+                        ? StringPropertyFilter(parameter, property, predicateValue.Value, predicateValue.CompareUsing)
+                        : throw new QueryPredicateValueException($"Property '{code}' on type {type.Name} should be of type string to use {predicateValue.CompareUsing} as comparison type.");
                 default:
-                    throw new QueryPredicateValueException($"Predicate value uses unsupported compare type ({predicateValue.Compare}).");
+                    throw new QueryPredicateValueException($"Predicate value uses unsupported compare type ({predicateValue.CompareUsing}).");
             }
+        }
+
+        private static bool IsComparableProperty([NotNull] PropertyInfo property)
+        {
+            if (property.PropertyType.BaseType == typeof(Enum))
+            {
+                return true;
+            }
+
+            if (property.PropertyType == typeof(Guid) || property.PropertyType == typeof(Guid?))
+            {
+                return true;
+            }
+
+            if (property.PropertyType == typeof(bool) || property.PropertyType == typeof(bool?))
+            {
+                return true;
+            }
+
+            if (property.PropertyType == typeof(int) || property.PropertyType == typeof(int?))
+            {
+                return true;
+            }
+
+            if (property.PropertyType == typeof(double) || property.PropertyType == typeof(double?))
+            {
+                return true;
+            }
+
+            if (property.PropertyType == typeof(decimal) || property.PropertyType == typeof(decimal?))
+            {
+                return true;
+            }
+
+            if (property.PropertyType == typeof(long) || property.PropertyType == typeof(long?))
+            {
+                return true;
+            }
+
+            if (property.PropertyType == typeof(uint) || property.PropertyType == typeof(uint?))
+            {
+                return true;
+            }
+
+            if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static ConstantExpression GetTypedValue([NotNull] PropertyInfo property, [NotNull] string value)
@@ -262,7 +321,7 @@ namespace D3.Core.Search.Query.Helpers
             return Expression.Constant(value);
         }
 
-        private static Expression StringPropertyFilter([NotNull] Expression parameter, [NotNull] PropertyInfo property, string value, QueryPredicateValueCompare type)
+        private static Expression StringPropertyFilter([NotNull] Expression parameter, [NotNull] PropertyInfo property, string value, QueryPredicateComparison type)
         {
             var method = typeof(string).GetMethod(type.ToString(), new[] { typeof(string) });
             if (method == null)

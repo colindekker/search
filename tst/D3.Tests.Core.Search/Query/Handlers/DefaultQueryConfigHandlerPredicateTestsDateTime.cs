@@ -32,12 +32,12 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Start",
-                Compare = QueryPredicateCompare.And,
+                CompareWith = QueryPredicateConnective.And,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-14", Compare = QueryPredicateValueCompare.GreaterThan });
-            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-16", Compare = QueryPredicateValueCompare.LessThanOrEqual });
+            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-14", CompareUsing = QueryPredicateComparison.GreaterThan });
+            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-16", CompareUsing = QueryPredicateComparison.LessThanOrEqual });
 
             config.QueryBy.Add(p1);
 
@@ -68,11 +68,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Start",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", Compare = QueryPredicateValueCompare.NotEqual });
+            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", CompareUsing = QueryPredicateComparison.NotEqual });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
@@ -102,11 +102,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Start",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", Compare = QueryPredicateValueCompare.LessThanOrEqual });
+            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", CompareUsing = QueryPredicateComparison.LessThanOrEqual });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
@@ -136,11 +136,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Start",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", Compare = QueryPredicateValueCompare.LessThan });
+            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", CompareUsing = QueryPredicateComparison.LessThan });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
@@ -169,11 +169,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Start",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", Compare = QueryPredicateValueCompare.GreaterThanOrEqual });
+            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", CompareUsing = QueryPredicateComparison.GreaterThanOrEqual });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
@@ -203,11 +203,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Start",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", Compare = QueryPredicateValueCompare.GreaterThan });
+            p1.Values.Add(new QueryPredicateValue { Value = "2020-01-15", CompareUsing = QueryPredicateComparison.GreaterThan });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
@@ -236,11 +236,11 @@ namespace D3.Tests.Core.Search.Query.Handlers
             var p1 = new QueryPredicate
             {
                 ColumnCode = "Start",
-                Compare = QueryPredicateCompare.Or,
+                CompareWith = QueryPredicateConnective.Or,
                 Values = new List<QueryPredicateValue>()
             };
 
-            p1.Values.Add(new QueryPredicateValue { Value = "2020-02-01", Compare = QueryPredicateValueCompare.Equal });
+            p1.Values.Add(new QueryPredicateValue { Value = "2020-02-01", CompareUsing = QueryPredicateComparison.Equal });
             config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
