@@ -24,33 +24,7 @@ namespace D3.Core.Search.Query.Helpers
 
                 foreach (var queryPredicate in config.QueryBy)
                 {
-                    if (queryPredicate.Values == null)
-                    {
-                        throw new QueryPredicateException("Predicate cannot exist without values to compare");
-                    }
-
-                    var parameter = Expression.Parameter(typeof(T), "e");
-
-                    Expression predicateExpression = null;
-
-                    foreach (var queryPredicateValue in queryPredicate.Values)
-                    {
-                        var predicateValueExpression =
-                            GetWhereValueComparison(typeof(T), parameter, queryPredicate, queryPredicateValue);
-
-                        predicateExpression = predicateExpression == null
-                            ? predicateValueExpression
-                            : queryPredicateValue.CompareWith == QueryPredicateConnective.And
-                                ? Expression.And(predicateExpression, predicateValueExpression)
-                                : Expression.OrElse(predicateExpression, predicateValueExpression);
-                    }
-
-                    if (predicateExpression == null)
-                    {
-                        throw new QueryPredicateException("A valid Predicate could not be constructed.");
-                    }
-
-                    var e = Expression.Lambda<Func<T, bool>>(predicateExpression, parameter);
+                    var e = GetWherePredicateExpression<T>(queryPredicate);
 
                     predicate = queryPredicate.CompareWith == QueryPredicateConnective.And
                         ? predicate.And(e)
@@ -62,18 +36,47 @@ namespace D3.Core.Search.Query.Helpers
 
             return result;
         }
+        private static Expression<Func<T, bool>> GetWherePredicateExpression<T>([NotNull] IQueryPredicate<QueryPredicateValue> predicate)
+            where T : class
+        {
+            if (predicate.Values == null)
+            {
+                throw new QueryPredicateException("Predicate cannot exist without values to compare");
+            }
+
+            var parameter = Expression.Parameter(typeof(T), "e");
+
+            Expression predicateExpression = null;
+
+            foreach (var queryPredicateValue in predicate.Values)
+            {
+                var predicateValueExpression = GetWherePredicateValueExpression(typeof(T), parameter, predicate, queryPredicateValue);
+
+                predicateExpression = predicateExpression == null
+                    ? predicateValueExpression
+                    : queryPredicateValue.CompareWith == QueryPredicateConnective.And
+                        ? Expression.And(predicateExpression, predicateValueExpression)
+                        : Expression.OrElse(predicateExpression, predicateValueExpression);
+            }
+
+            if (predicateExpression == null)
+            {
+                throw new QueryPredicateException($"A valid Expression could not be constructed for predicate with column code '{predicate.ColumnCode}'.");
+            }
+
+            return Expression.Lambda<Func<T, bool>>(predicateExpression, parameter);
+        }
 
         /// <summary>
-        /// Gets the where value comparison.
-        /// https://stackoverflow.com/questions/16208214/construct-lambdaexpression-for-nested-property-from-string
+        /// Gets the expression that represents the supplied <paramref name="predicateValue"/>'s comparison as part of a  where clause's <paramref name="predicate"/>.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <param name="parameter">The parameter.</param>
-        /// <param name="predicate">The predicate.</param>
-        /// <param name="predicateValue">The predicate value.</param>
-        /// <returns></returns>
+        /// <param name="parameter">The "left-side" part of a .</param>
+        /// <param name="predicate">A where clause for a (sub)property query.</param>
+        /// <param name="predicateValue">The value the <paramref name="predicate"/>'s property should match with using the <seealso cref="QueryPredicateValue.CompareUsing"/>.</param>
+        /// <returns>A <paramref name="predicate"/>'s single value comparison expression.</returns>
         /// <exception cref="QueryPredicateException">Predicate compares unknown property {code}.</exception>
-        private static Expression GetWhereValueComparison(
+        private static Expression GetWherePredicateValueExpression(
             [NotNull] Type type,
             [NotNull] ParameterExpression parameter,
             [NotNull] IQueryPredicate<QueryPredicateValue> predicate,
@@ -90,39 +93,52 @@ namespace D3.Core.Search.Query.Helpers
                     throw new QueryPredicateException($"Predicate compares unknown property {code}.");
                 }
 
-                if (property.PropertyType.Implements<IEnumerable>())
-                {
-                    var c = Expression.PropertyOrField(parameter, predicate.ColumnCode.Split('.')[0]); // list property on parent
-                    var a = property.PropertyType.GetGenericArguments()[0]; // list property on parent: item type
-                    var p = Expression.Parameter(a, "c"); // comparison on list item type: left
-                    var v = GetWherePropertyValueComparison(a, p, predicate, predicateValue); // comparison on list item type: right
-                    var l = Expression.Lambda(v, p); // comparison on list item type
-
-                    return Expression.Call(typeof(Enumerable), "Any", new[] { a }, c, l);
-                }
-
-                Expression body = parameter;
-                foreach (var memberCode in predicate.ColumnCode.Split('.'))
-                {
-                    var memberProperty = type.GetProperty(memberCode);
-
-                    if (!IsComparableProperty(memberProperty) && !memberProperty.PropertyType.Implements<IEnumerable>())
-                    {
-                        property = memberProperty;
-                        body = Expression.PropertyOrField(body, memberCode);
-                    }
-                }
-
-                return GetWherePropertyValueComparison(property.PropertyType, body, predicate, predicateValue);
-
-                //body = Expression.PropertyOrField(body, code);
-                //return GetWherePropertyValueComparison(property.PropertyType, body, predicate, predicateValue);
+                return property.PropertyType.Implements<IEnumerable>()
+                    ? GetWherePredicateValueEnumerablePropertyExpression(property, parameter, predicate, predicateValue)
+                    : GetWherePredicateValueComplexPropertyExpression(type, property, parameter, predicate, predicateValue);
             }
 
-            return GetWherePropertyValueComparison(type, parameter, predicate, predicateValue);
+            return GetWherePredicateValueComparisonExpression(type, parameter, predicate, predicateValue);
         }
 
-        private static Expression GetWherePropertyValueComparison(
+        private static Expression GetWherePredicateValueEnumerablePropertyExpression(
+            [NotNull] PropertyInfo property,
+            [NotNull] ParameterExpression parameter,
+            [NotNull] IQueryPredicate<QueryPredicateValue> predicate,
+            [NotNull] IQueryPredicateValue predicateValue)
+        {
+            var c = Expression.PropertyOrField(parameter, predicate.ColumnCode.Split('.')[0]); // list property on parent
+            var a = property.PropertyType.GetGenericArguments()[0]; // list property on parent: item type
+            var p = Expression.Parameter(a, "c"); // comparison on list item type: left
+            var v = GetWherePredicateValueComparisonExpression(a, p, predicate, predicateValue); // comparison on list item type: right
+            var l = Expression.Lambda(v, p); // comparison on list item type
+
+            return Expression.Call(typeof(Enumerable), "Any", new[] { a }, c, l);
+        }
+
+        private static Expression GetWherePredicateValueComplexPropertyExpression(
+            [NotNull] Type type,
+            [NotNull] PropertyInfo property,
+            [NotNull] ParameterExpression parameter,
+            [NotNull] IQueryPredicate<QueryPredicateValue> predicate,
+            [NotNull] IQueryPredicateValue predicateValue)
+        {
+            Expression body = parameter;
+            foreach (var memberCode in predicate.ColumnCode.Split('.'))
+            {
+                var memberProperty = type.GetProperty(memberCode);
+
+                if (memberProperty != null && (!IsComparableProperty(memberProperty) && !memberProperty.PropertyType.Implements<IEnumerable>()))
+                {
+                    property = memberProperty;
+                    body = Expression.PropertyOrField(body, memberCode);
+                }
+            }
+
+            return GetWherePredicateValueComparisonExpression(property.PropertyType, body, predicate, predicateValue);
+        }
+
+        private static Expression GetWherePredicateValueComparisonExpression(
             [NotNull] Type type,
             [NotNull] Expression parameter,
             [NotNull] IQueryPredicate<QueryPredicateValue> predicate,
