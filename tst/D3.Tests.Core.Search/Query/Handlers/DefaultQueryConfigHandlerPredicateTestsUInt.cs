@@ -21,7 +21,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         private readonly ServiceProvider _serviceProvider;
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_UInt_Property_Equal()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_UInt_Property_Equal()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();

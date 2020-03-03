@@ -22,7 +22,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         private readonly ServiceProvider _serviceProvider;
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_DateTime_Property_Between()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_DateTime_Property_Between()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
@@ -58,7 +58,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_DateTime_Property_NotEqual()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_DateTime_Property_NotEqual()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
@@ -92,7 +92,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_DateTime_Property_LessThanOrEqual()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_DateTime_Property_LessThanOrEqual()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
@@ -126,7 +126,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_DateTime_Property_LessThan()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_DateTime_Property_LessThan()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
@@ -159,7 +159,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_DateTime_Property_GreaterThanOrEqual()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_DateTime_Property_GreaterThanOrEqual()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
@@ -193,7 +193,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_DateTime_Property_GreaterThan()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_DateTime_Property_GreaterThan()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
@@ -226,7 +226,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_DateTime_Property_Equal()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_DateTime_Property_Equal()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();

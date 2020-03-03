@@ -21,27 +21,59 @@ namespace D3.Tests.Core.Search.Query.Handlers
         private readonly ServiceProvider _serviceProvider;
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_String_Sub_Collection_Property_Equal()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_String_Sub_Collection_Property_Equal()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
 
-            var config = new QueryConfig { QueryBy = new List<QueryPredicate>() };
-
-            var p1 = new QueryPredicate
+            var config = new QueryConfig
             {
-                ColumnCode = "Children.Name",
-                CompareWith = QueryPredicateConnective.Or,
-                Values = new List<QueryPredicateValue>()
+                QueryBy = new List<QueryPredicate>
+                {
+                    new QueryPredicate
+                    {
+                        ColumnCode = "Children.Name",
+                        CompareWith = QueryPredicateConnective.Or,
+                        Values = new List<QueryPredicateValue>
+                        {
+                            new QueryPredicateValue
+                            {
+                                Value = "ColinChild",
+                                CompareUsing = QueryPredicateComparison.Equal
+                            }
+                        }
+                    }
+                }
             };
-
-            p1.Values.Add(new QueryPredicateValue { Value = "ColinChild", CompareUsing = QueryPredicateComparison.Equal });
-            config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
             {
-                new TestItem { Name = "Colin", Id = 1, Children = new List<TestItemChild> { new TestItemChild { Id = 10, Name = "ColinChild" }}},
-                new TestItem { Name = "Brendan", Id = 2, Children = new List<TestItemChild> { new TestItemChild { Id = 10, Name = "BrendanChild" }}}
+                new TestItem
+                {
+                    Name = "Colin",
+                    Id = 1,
+                    Children = new List<TestItemChild>
+                    {
+                        new TestItemChild
+                        {
+                            Id = 10,
+                            Name = "ColinChild"
+                        }
+                    }
+                },
+                new TestItem
+                {
+                    Name = "Brendan",
+                    Id = 2,
+                    Children = new List<TestItemChild>
+                    {
+                        new TestItemChild
+                        {
+                            Id = 20,
+                            Name = "BrendanChild"
+                        }
+                    }
+                }
             };
 
             var result = await handler
@@ -54,27 +86,53 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_String_Sub_Property_Equal()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_String_Sub_Property_Equal()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
 
-            var config = new QueryConfig { QueryBy = new List<QueryPredicate>() };
-
-            var p1 = new QueryPredicate
+            var config = new QueryConfig
             {
-                ColumnCode = "Child.Name",
-                CompareWith = QueryPredicateConnective.Or,
-                Values = new List<QueryPredicateValue>()
+                QueryBy = new List<QueryPredicate>
+                {
+                    new QueryPredicate
+                    {
+                        ColumnCode = "Child.Name",
+                        CompareWith = QueryPredicateConnective.Or,
+                        Values = new List<QueryPredicateValue>
+                        {
+                            new QueryPredicateValue
+                            {
+                                Value = "ColinChild",
+                                CompareUsing = QueryPredicateComparison.Equal
+                            }
+                        }
+                    }
+                }
             };
-
-            p1.Values.Add(new QueryPredicateValue { Value = "ColinChild", CompareUsing = QueryPredicateComparison.Equal });
-            config.QueryBy.Add(p1);
 
             var source = new List<TestItemChild>
             {
-                new TestItemChild {Name = "Colin", Id = 1, Child = new TestItemChildChild { Id = 10, Name = "ColinChild"}},
-                new TestItemChild {Name = "Brendan", Id = 2, Child = new TestItemChildChild { Id = 11, Name = "BrendanChild"}}
+                new TestItemChild
+                {
+                    Name = "Colin",
+                    Id = 1,
+                    Child = new TestItemChildChild
+                    {
+                        Id = 10,
+                        Name = "ColinChild"
+                    }
+                },
+                new TestItemChild
+                {
+                    Name = "Brendan",
+                    Id = 2,
+                    Child = new TestItemChildChild
+                    {
+                        Id = 20,
+                        Name = "BrendanChild"
+                    }
+                }
             };
 
             var result = await handler
@@ -87,22 +145,30 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_String_SubSub_Property_Equal()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_String_SubSub_Property_Equal()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
 
-            var config = new QueryConfig { QueryBy = new List<QueryPredicate>() };
-
-            var p1 = new QueryPredicate
+            var config = new QueryConfig
             {
-                ColumnCode = "Child.Child.Name",
-                CompareWith = QueryPredicateConnective.Or,
-                Values = new List<QueryPredicateValue>()
+                QueryBy = new List<QueryPredicate>
+                {
+                    new QueryPredicate
+                    {
+                        ColumnCode = "Child.Child.Name",
+                        CompareWith = QueryPredicateConnective.Or,
+                        Values = new List<QueryPredicateValue>
+                        {
+                            new QueryPredicateValue
+                            {
+                                Value = "ColinChildChild",
+                                CompareUsing = QueryPredicateComparison.Equal
+                            }
+                        }
+                    }
+                }
             };
-
-            p1.Values.Add(new QueryPredicateValue { Value = "ColinChildChild", CompareUsing = QueryPredicateComparison.Equal });
-            config.QueryBy.Add(p1);
 
             var source = new List<TestItemChild>
             {
@@ -148,27 +214,43 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_String_Property_Equal()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_String_Property_Equal()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
 
-            var config = new QueryConfig {QueryBy = new List<QueryPredicate>()};
-
-            var p1 = new QueryPredicate
+            var config = new QueryConfig
             {
-                ColumnCode = "Name",
-                CompareWith = QueryPredicateConnective.Or,
-                Values = new List<QueryPredicateValue>()
+                QueryBy = new List<QueryPredicate>
+                {
+                    new QueryPredicate
+                    {
+                        ColumnCode = "Name",
+                        CompareWith = QueryPredicateConnective.Or,
+                        Values = new List<QueryPredicateValue>
+                        {
+                            new QueryPredicateValue
+                            {
+                                Value = "Colin",
+                                CompareUsing = QueryPredicateComparison.Equal
+                            }
+                        }
+                    }
+                }
             };
-
-            p1.Values.Add(new QueryPredicateValue {Value = "Colin", CompareUsing = QueryPredicateComparison.Equal});
-            config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
             {
-                new TestItem {Name = "Colin", Id = 1},
-                new TestItem {Name = "Brendan", Id = 2}
+                new TestItem
+                {
+                    Name = "Colin",
+                    Id = 1
+                },
+                new TestItem
+                {
+                    Name = "Brendan",
+                    Id = 2
+                }
             };
 
             var result = await handler
@@ -181,27 +263,43 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_String_Property_Contains()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_String_Property_Contains()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
 
-            var config = new QueryConfig { QueryBy = new List<QueryPredicate>() };
-
-            var p1 = new QueryPredicate
+            var config = new QueryConfig
             {
-                ColumnCode = "Name",
-                CompareWith = QueryPredicateConnective.Or,
-                Values = new List<QueryPredicateValue>()
+                QueryBy = new List<QueryPredicate>
+                {
+                    new QueryPredicate
+                    {
+                        ColumnCode = "Name",
+                        CompareWith = QueryPredicateConnective.Or,
+                        Values = new List<QueryPredicateValue>
+                        {
+                            new QueryPredicateValue
+                            {
+                                Value = "oli",
+                                CompareUsing = QueryPredicateComparison.Contains
+                            }
+                        }
+                    }
+                }
             };
-
-            p1.Values.Add(new QueryPredicateValue { Value = "oli", CompareUsing = QueryPredicateComparison.Contains });
-            config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
             {
-                new TestItem {Name = "Colin", Id = 1},
-                new TestItem {Name = "Brendan", Id = 2}
+                new TestItem
+                {
+                    Name = "Colin",
+                    Id = 1
+                },
+                new TestItem
+                {
+                    Name = "Brendan",
+                    Id = 2
+                }
             };
 
             var result = await handler
@@ -214,28 +312,48 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Multiple_Items_In_Queryable_By_Single_Predicate_String_Property_Contains()
+        public async Task Handler_Finds_Multiple_Items_By_Single_Predicate_String_Property_Contains()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
 
-            var config = new QueryConfig { QueryBy = new List<QueryPredicate>() };
-
-            var p1 = new QueryPredicate
+            var config = new QueryConfig
             {
-                ColumnCode = "Name",
-                CompareWith = QueryPredicateConnective.Or,
-                Values = new List<QueryPredicateValue>()
+                QueryBy = new List<QueryPredicate>
+                {
+                    new QueryPredicate
+                    {
+                        ColumnCode = "Name",
+                        CompareWith = QueryPredicateConnective.Or,
+                        Values = new List<QueryPredicateValue>
+                        {
+                            new QueryPredicateValue
+                            {
+                                Value = "oli",
+                                CompareUsing = QueryPredicateComparison.Contains
+                            }
+                        }
+                    }
+                }
             };
-
-            p1.Values.Add(new QueryPredicateValue { Value = "oli", CompareUsing = QueryPredicateComparison.Contains });
-            config.QueryBy.Add(p1);
 
             var source = new List<TestItem>
             {
-                new TestItem {Name = "Colin", Id = 1},
-                new TestItem {Name = "Brendan", Id = 2},
-                new TestItem {Name = "Drooling", Id = 3},
+                new TestItem
+                {
+                    Name = "Colin",
+                    Id = 1
+                },
+                new TestItem
+                {
+                    Name = "Brendan",
+                    Id = 2
+                },
+                new TestItem
+                {
+                    Name = "Drooling",
+                    Id = 3
+                },
             };
 
             var result = await handler

@@ -21,7 +21,84 @@ namespace D3.Tests.Core.Search.Query.Handlers
         private readonly ServiceProvider _serviceProvider;
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_Nullable_Long_Property_Equal()
+        public async Task Handler_Finds_Multiple_Items_By_Multiple_Predicates_For_Long_Property_With_Single_Or_Values_Equal()
+        {
+            var handler = _serviceProvider
+                .GetService<IQueryConfigHandler<QueryConfig>>();
+
+            var config = new QueryConfig
+            {
+                QueryBy = new List<QueryPredicate>
+                {
+                    new QueryPredicate
+                    {
+                        ColumnCode = "ForeignId",
+                        CompareWith = QueryPredicateConnective.Or,
+                        Values = new List<QueryPredicateValue>
+                        {
+                            new QueryPredicateValue
+                            {
+                                Value = "100",
+                                CompareWith = QueryPredicateConnective.Or,
+                                CompareUsing = QueryPredicateComparison.Equal
+                            }
+                        }
+                    },
+                    new QueryPredicate
+                    {
+                        ColumnCode = "ForeignKey",
+                        CompareWith = QueryPredicateConnective.Or,
+                        Values = new List<QueryPredicateValue>
+                        {
+                            new QueryPredicateValue
+                            {
+                                Value = "200",
+                                CompareWith = QueryPredicateConnective.Or,
+                                CompareUsing = QueryPredicateComparison.Equal
+                            }
+                        }
+                    }
+                }
+            };
+
+            var source = new List<TestItem>
+            {
+                new TestItem
+                {
+                    Name = "Colin",
+                    Id = 1,
+                    ForeignId = 100,
+                    ForeignKey = 100
+                },
+                new TestItem
+                {
+                    Name = "Brendan",
+                    Id = 2,
+                    ForeignId = 200,
+                    ForeignKey = 200
+                },
+                new TestItem
+                {
+                    Name = "Drooling",
+                    Id = 3,
+                    ForeignId = 300,
+                    ForeignKey = 300
+                },
+            };
+
+            var result = await handler
+                .HandleAsync<TestItem, QueryResult<TestItem>>(config, source.AsQueryable())
+                .ConfigureAwait(false);
+
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Total);
+            Assert.NotEmpty(result.Payload);
+            Assert.Contains("Colin", result.Payload.Select(p => p.Name));
+            Assert.Contains("Brendan", result.Payload.Select(p => p.Name));
+        }
+
+        [Fact]
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_Nullable_Long_Property_Equal()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
@@ -54,7 +131,7 @@ namespace D3.Tests.Core.Search.Query.Handlers
         }
 
         [Fact]
-        public async Task Handler_Finds_Single_Item_In_Queryable_By_Single_Predicate_Long_Property_Equal()
+        public async Task Handler_Finds_Single_Item_By_Single_Predicate_Long_Property_Equal()
         {
             var handler = _serviceProvider
                 .GetService<IQueryConfigHandler<QueryConfig>>();
