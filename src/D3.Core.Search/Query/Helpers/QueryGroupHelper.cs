@@ -1,4 +1,4 @@
-namespace D3.Core.Search.Query.Helpers
+﻿namespace D3.Core.Search.Query.Helpers
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
